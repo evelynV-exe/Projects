@@ -10,9 +10,9 @@ int total_products = 0;
 int received_money_amount = 0;
 int change = 0;
 
-int drink_stock[] = {10, 10, 5, 5};   // Coke, Fanta, Americano, Latte
+int drink_stock[4] = {10, 10, 5, 5};   // Coke, Fanta, Americano, Latte
 int drink_price[] = {10, 13, 30, 35}; //prices of drinks
-int snack_stock[] = {15, 10, 10}; //sunflower seed, bean, sour pork
+int snack_stock[3] = {15, 10, 10}; //sunflower seed, bean, sour pork
 int snack_price[] = {13, 20, 15}; //prices of snacks
 
 // bills and coins variables in the machine and user input
@@ -75,7 +75,7 @@ int choosingMenu() {
                 case 1:
 
                     printf("----------------------------------\n");
-                    printf("You selected Coke.\n");
+                    printf("\t\tYou selected Coke.\n");
 
                     if (drink_stock[0] > 0) {
 
@@ -380,67 +380,25 @@ void admin() {
     }
 } // end admin
 
-void adminMenu() {
+void adminMenu() { //not fully done yet.
     int choice_admin;
     int choice_money;
     int choice_product;
     int money_refill;
+    int product_refill;
     int count;
 
-    printf("\n\t--- Admin's menu ---\n");
-    printf("1. Money stock\n2. Product stock\n3. Main menu\n");
-    scanf("%d", choice_admin);
+    while(1) {    
+        
+        printf("\n\t--- Admin's menu ---\n");
+        printf("1. Money stock\n2. Product stock\n3. Main menu\n");
+        printf("\nPlease enter your chioce: ", choice_admin);
+        scanf("%d", &choice_admin);
 
-    if(choice_admin == 1) {
-        // Show remaining money in machine
-        printf("\nMoney left in machine:\n\n");
+        if(choice_admin == 1) {
+            // Show remaining money in machine
+            printf("\nMoney left in machine:\n\n");
 
-        for (int i = 0; i < 5; i++) {
-            printf("%d baht bills: %d\n", bill_types[i], bill_counts[i]);
-        } // end for
-
-        for (int i = 0; i < 3; i++) {
-            printf("%d baht coins: %d\n", coin_types[i], coin_counts[i]);
-        }// end for
-
-        printf("---------------------------------------------");
-
-        printf("Do you want to refill the stock? (1 for Yes | 0 for No): ", choice_money);
-        scanf("%d", choice_money);
-
-        for (int i = 0; i < 5; i++) admin_bill_input[i] = 0;
-        for (int i = 0; i < 3; i++) admin_coin_input[i] = 0;
-
-        if( choice_money == 1) {
-            printf("What type of money are you restocking?");
-            printf("1. Bills\n2. Coins\n 3. Both");
-            scanf("%d", money_refill);
-
-            if (money_refill == 1 || money_refill == 3) {
-                printf("Enter the number of bills you want to insert:\n");
-                for (int i = 0; i < 5; i++) {
-                    printf("%d baht: ", bill_types[i]);
-                    scanf("%d", &count);
-                    admin_bill_input[i] += count;
-                    received_money_amount += count * bill_types[i];
-                } // end for
-            } // end if
-
-            if (money_refill == 2 || money_refill == 3) {
-                printf("Enter the number of coins you want to insert:\n");
-                for (int i = 0; i < 3; i++) {
-                    printf("%d baht: ", coin_types[i]);
-                    scanf("%d", &count);
-                    admin_coin_input[i] += count;
-                    received_money_amount += count * coin_types[i];
-                } // end for
-            } // end if
-
-            for (int i = 0; i < 5; i++) bill_counts[i] += admin_bill_input[i];
-            for (int i = 0; i < 3; i++) coin_counts[i] += admin_bill_input[i];
-
-            printf("---------------------------------------------------\n");
-            
             for (int i = 0; i < 5; i++) {
                 printf("%d baht bills: %d\n", bill_types[i], bill_counts[i]);
             } // end for
@@ -448,69 +406,136 @@ void adminMenu() {
             for (int i = 0; i < 3; i++) {
                 printf("%d baht coins: %d\n", coin_types[i], coin_counts[i]);
             }// end for
-            
-        } else {
-            printf("Returning to Main menu for Admin.");
-        }
-    } else if (choice_admin == 2) {
-        printf("\n---------Product stocks!--------\n");
-        printf("----Drinks----\n");
-        printf("Coke stocks: %d\n", drink_stock[0]);
-        printf("Fanta stocks: %d\n", drink_stock[1]);
-        printf("Americano stocks: %d\n", drink_stock[2]);
-        printf("Latte stocks: %d\n", drink_stock[3]);
 
-        printf("----Snacks----\n");
-        printf("Sunflower seed stocks: %d\n", snack_stock[0]);
-        printf("Bean stocks: %d\n", snack_stock[1]);
-        printf("Sour pork stocks: %d\n", snack_stock[2]);
+            printf("---------------------------------------------\n");
 
-        printf("----------------------------------------------------\n");
+            printf("Do you want to refill the stock? (1 for Yes | 0 for No): ", choice_money);
+            scanf("%d", choice_money);
 
-        printf("Do you want to refill the stock? (1 for Yes | 0 for No): ", choice_product);
+            for (int i = 0; i < 5; i++) admin_bill_input[i] = 0;
+            for (int i = 0; i < 3; i++) admin_coin_input[i] = 0;
 
-        if (choice_product == 1) {
-            printf("Which items do you want to refill? \n");
-            printf("1. Drinks\n2. Snacks\n3. Both\n");
-            printf("Please choose: ");
-            scanf("%d", &choice_product);
+            if( choice_money == 1) {
+                printf("What type of money are you restocking?");
+                printf("1. Bills\n2. Coins\n 3. Both");
+                scanf("%d", money_refill);
 
-            if (choice_product == 1 || choice_product == 3) {
-                printf("Enter the number of drinks you want to refill: \n");
-                for (int i = 0; i < 4; i++) {
-                    printf("%s stocks: ", (i == 0 ? "Coke" : (i == 1 ? "Fanta" : (i == 2 ? "Americano" : "Latte"))));
-                    scanf("%d", &drink_stock[i]);
+                if (money_refill == 1 || money_refill == 3) {
+                    printf("Enter the number of bills you want to insert:\n");
+                    for (int i = 0; i < 5; i++) {
+                        printf("%d baht: ", bill_types[i]);
+                        scanf("%d", &count);
+                        admin_bill_input[i] += count;
+                        received_money_amount += count * bill_types[i];
+                    } // end for
+                } // end if
+
+                if (money_refill == 2 || money_refill == 3) {
+                    printf("Enter the number of coins you want to insert:\n");
+                    for (int i = 0; i < 3; i++) {
+                        printf("%d baht: ", coin_types[i]);
+                        scanf("%d", &count);
+                        admin_coin_input[i] += count;
+                        received_money_amount += count * coin_types[i];
+                    } // end for
+                } // end if
+
+                for (int i = 0; i < 5; i++) bill_counts[i] += admin_bill_input[i];
+                for (int i = 0; i < 3; i++) coin_counts[i] += admin_bill_input[i];
+
+                printf("---------------------------------------------------\n");
+
+                for (int i = 0; i < 5; i++) {
+                    printf("%d baht bills: %d\n", bill_types[i], bill_counts[i]);
                 } // end for
-            } // end if
 
-            if (choice_product == 2 || choice_product == 3) {
-                printf("Enter the number of snacks you want to refill:\n");
                 for (int i = 0; i < 3; i++) {
-                    printf("%s stocks: ", (i == 0 ? "Sunflower seed" : (i == 1 ? "Bean" : "Sour pork")));
-                    scanf("%d", &snack_stock[i]);
-                } // end for
-            } // end if
-
-            printf("\nStocks have been refilled successfully!\n");
-            printf("----------------------------------------------------\n");
-
-            printf("\n---------Product stocks!--------\n");
-            printf("----Drinks----\n");
+                    printf("%d baht coins: %d\n", coin_types[i], coin_counts[i]);
+                }// end for
+                
+            } else {
+                printf("Returning to Main menu for Admin.");
+            }
+        } else if (choice_admin == 2) {
+            printf("\n---------Current Product stocks!--------\n");
+            printf("\t----Drinks----\n");
             printf("Coke stocks: %d\n", drink_stock[0]);
             printf("Fanta stocks: %d\n", drink_stock[1]);
             printf("Americano stocks: %d\n", drink_stock[2]);
             printf("Latte stocks: %d\n", drink_stock[3]);
 
-            printf("----Snacks----\n");
+            printf("\t----Snacks----\n");
             printf("Sunflower seed stocks: %d\n", snack_stock[0]);
             printf("Bean stocks: %d\n", snack_stock[1]);
             printf("Sour pork stocks: %d\n", snack_stock[2]);
-        } else {
-            printf("\n\nReturn to main menu!");
-        }
 
-    } else {
-        menu();
+            printf("----------------------------------------------------\n");
+
+            printf("Do you want to refill the stock? (1 for Yes | 0 for No): ", product_refill);
+            scanf("%d", &product_refill);
+
+            if (product_refill == 1) {
+                int refill_choice;
+
+                printf("\n---------Types of products---------\n");
+                printf("1. Drinks\n2. Snacks\n3. Americano\n4. Latte\n");
+                printf("Choose your choice: ");
+                scanf("%d", refill_choice);
+
+                if (refill_choice >= 1 && refill_choice <= 4) {
+                    printf("Enter new stock for %s: ", 
+                        (refill_choice == 1 ? "Coke" :
+                        (refill_choice == 2 ? "Fanta" :
+                        (refill_choice == 3 ? "Americano" : "Latte"))));
+
+                    int new_stock;
+                    scanf("%d", &new_stock);
+                    drink_stock[refill_choice - 1] = new_stock;
+                } else if (refill_choice == 2) {
+                    //not done yettttt
+                }
+            } else {
+                break;
+            }
+            
+
+            if (product_refill == 1) {
+                printf("Which items do you want to refill? \n");
+                printf("1. Drinks\n2. Snacks\n3. Both\n");
+                printf("Please choose: ");
+                scanf("%d", &product_refill);
+
+                if (product_refill >= 1 && product_refill <= 4) {
+                    printf("Enter new stock for %s: ", product_refill);
+
+                } // end if
+
+                printf("\nStocks have been refilled successfully!\n");
+
+                printf("----------------------------------------------------\n");
+
+                printf("\n---------Updated Product stocks!--------\n");
+                printf("----Drinks----\n");
+                printf("Coke stocks: %d\n", drink_stock[0]);
+                printf("Fanta stocks: %d\n", drink_stock[1]);
+                printf("Americano stocks: %d\n", drink_stock[2]);
+                printf("Latte stocks: %d\n", drink_stock[3]);
+
+                printf("----Snacks----\n");
+                printf("Sunflower seed stocks: %d\n", snack_stock[0]);
+                printf("Bean stocks: %d\n", snack_stock[1]);
+                printf("Sour pork stocks: %d\n", snack_stock[2]);
+            } else {
+                printf("\n\nReturn to main menu!");
+            }
+
+        } else if (choice_admin == 3) {
+            printf("Returning to main menu.\n");
+            break;
+        }
+        else {
+            printf("Invalid choice. Please try again.\n");
+        }
     }
 }
 
