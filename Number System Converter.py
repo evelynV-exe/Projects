@@ -1,52 +1,109 @@
-binary = "1110110.010111"
+def detect_base(numStr):
+    #clear the decimal number and uppercase everything
+    num = numStr.replace(".", "").upper()
 
-intPart, fracPart = binary.split('.')
+    #set of number systems
+    bases = {
+        2: set("01"),
+        8: set("01234567"),
+        10: set("0123456789"),
+        16: set("0123456789ABCDEF")
+    }
+
+    #what base user enter in
+    for base in (2, 8, 10, 16):
+        if all(ch in bases[base] for ch in num):
+            return base
+    
+    raise ValueError("Invalid number for bases 2, 8, 10, or 16.")
+
+#to base 2
+def toBinary(x):
+    intPart = int(x)
+    fracPart = x - intPart
+
+    binaryInt = bin(intPart)[2:]
+
+    #convert the decimal part
+    binaryFrac = ""
+    for _ in range(12):
+        fracPart *= 2
+        bit = int(fracPart)
+        binaryFrac += str(bit)
+        fracPart -= bit
+    return binaryInt + "." + binaryFrac
+
 
 #base 8
-padLeft = (3 - len(intPart) % 3) %3
-intPadded = '0' *padLeft + intPart
+def toOctal(x):
+    intPart = int(x)
+    fracPart = x - intPart
 
-padRight = (3 - len(fracPart) % 3) %3
-fracPadded = fracPart + '0' * padRight
+    octInt = oct(intPart)[2:]
 
-octInt = ""
-for i in range(0, len(intPadded), 3):
-    group = intPadded[i:i+3]
-    octInt += str(int(group, 2))
+    octFrac = ""
+    for _ in range(12):
+        fracPart *= 8
+        digit = int(fracPart)
+        octFrac += str(digit)
+        fracPart -= digit
 
-octFrac = ""
-for i in range(0, len(fracPadded), 3):
-    group = fracPadded[i:i+3]
-    octFrac += str(int(group, 2))
-
-fullOct = octInt + "." + octFrac
+    return octInt + "." + octFrac
 
 #to base 10
-decInt = int(intPart, 2)
-dexFrac = sum(int(bit) * 2**-(i+1) for i, bit in enumerate(fracPart))
+def toDecimal(numStr, base):
+    decFrac = 0
+    #check for the decimal
+    if "." not in numStr:
+        return int(numStr, base)
 
-dec = decInt + dexFrac
+    intPart, fracPart = numStr.split(".")
+
+    decInt = int(intPart, base)
+    for i, digit in enumerate(fracPart, start=1):
+        decFrac += int(digit, base) * base**-(i)
+    
+    return decInt + decFrac
 
 #base 16
-pad = (4 - len(fracPart) % 4) % 4
-fracPadded = fracPart + '0' * pad
+def toHex(x):
+    intPart = int(x)
+    fracPart = x - intPart
 
-hexInt = format(decInt, 'x')
+    hexInt = format(intPart, "X")
 
-hexDec = ""
-for i in range(0, len(fracPadded), 4):
-    group = fracPadded[i:i+4]
-    value = int (group, 2)
-    hexDigit = format(value, 'x')
-    hexDec += hexDigit
+    hexFrac = ""
+    for _ in range(12):
+        fracPart *= 16
+        digit = int(fracPart)
+        hexFrac += format(digit, "X")
+        fracPart -= digit
 
-fullHex = hexInt + "." + hexDec
+    return hexInt + "." + hexFrac
 
-print("---Base 2 to Base 8 to Base 16 converter---")
+def trimFraction(resultStr):
+    if "." not in resultStr:
+        return resultStr
 
-print(f"Binary numbers: {binary}")
+    intPart, fracPart = resultStr.split(".")
 
-print(f"Base 8: {fullOct}")
-print(f"Base 10: {dec}")
+    fracPart = fracPart.rstrip("0")
 
-print(f"Base 16: {fullHex}")
+    if fracPart == "":
+        return intPart
+    
+    return intPart + "." + fracPart
+
+user_number = input("Enter a number in any base (2, 8, 10, 16): ")
+
+base = detect_base(user_number)
+decimalVal = toDecimal(user_number, base)
+
+print("-------------Converter-------------")
+print(f"Input: {user_number}")
+print(f"Detected base: {base}")
+
+print("Base 10: ", decimalVal)
+print("Base 2: ", trimFraction(toBinary(decimalVal)))
+print("Base 8: ", trimFraction(toOctal(decimalVal)))
+print("Base 16: ", trimFraction(toHex(decimalVal)))
