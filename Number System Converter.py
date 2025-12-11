@@ -48,4 +48,5 @@ print(f"Binary numbers: {binary}")
 
 print(f"Base 8: {fullOct}")
 print(f"Base 10: {dec}")
+
 print(f"Base 16: {fullHex}")
