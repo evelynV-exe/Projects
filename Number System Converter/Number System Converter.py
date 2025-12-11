@@ -1,4 +1,4 @@
-def detect_base(numStr):
+def isValid(numStr, base):
     #clear the decimal number and uppercase everything
     num = numStr.replace(".", "").upper()
 
@@ -9,13 +9,8 @@ def detect_base(numStr):
         10: set("0123456789"),
         16: set("0123456789ABCDEF")
     }
-
-    #what base user enter in
-    for base in (2, 8, 10, 16):
-        if all(ch in bases[base] for ch in num):
-            return base
     
-    raise ValueError("Invalid number for bases 2, 8, 10, or 16.")
+    return all(ch in bases[base] for ch in num)
 
 #to base 2
 def toBinary(x):
@@ -94,14 +89,20 @@ def trimFraction(resultStr):
     
     return intPart + "." + fracPart
 
-user_number = input("Enter a number in any base (2, 8, 10, 16): ")
+userNumber = input("Enter a number that you want to convert: ")
+userBase = int(input("Enter the base of that number (2, 8, 10, 16): "))
 
-base = detect_base(user_number)
-decimalVal = toDecimal(user_number, base)
+if userBase not in (2, 8, 10, 16):
+    raise ValueError("Base must be 2, 8, 10, 16.")
+
+if not isValid(userNumber, userBase):
+    raise ValueError(f"{userNumber} is not valid for base {userBase}.")
+
+decimalVal = toDecimal(userNumber, userBase)
 
 print("-------------Converter-------------")
-print(f"Input: {user_number}")
-print(f"Detected base: {base}")
+print(f"Input: {userNumber}")
+print(f"Detected base: {userBase}")
 
 print("Base 10: ", decimalVal)
 print("Base 2: ", trimFraction(toBinary(decimalVal)))
