@@ -93,11 +93,16 @@ def trimFraction(resultStr):
 
 bases = [2, 8, 10, 16]
 MAX_INT = 9999
+userRound = 0
+score = 0
+incorrectScore = 0
 
 while True:
+    #random the number and base
     randBase = random.choice(bases)
     randInt = random.randint(1, MAX_INT)
-    randFrac = random.random()
+    places = random.random(1, 7)
+    randFrac = round(random.random(), places)
     randNum = randInt + randFrac
 
     if randBase == 10:
@@ -109,17 +114,43 @@ while True:
     elif randBase == 16:
         numStr = toHex(randNum)
 
-    print(f"\nTry to Convert!\nYour number is {numStr}.\nBase: {randBase}\n")
+    #print the numbers out for user to convert
+    print("---------------------------Welcome!-------------------------")
+    print("Try to convert the number! To the base that it asks!")
+    print(f"Round: {userRound}")
+    print(f"Your number is {numStr}.\nBase: {randBase}\n")
 
     decimalVal = toDecimal(numStr, randBase)
 
-    print("Base 10: ", round(decimalVal, 4))
-    print("Base 2: ", toBinary(decimalVal))
-    print("Base 8: ", toOctal(decimalVal))
-    print("Base 16: ", toHex(decimalVal))
+    correct = {
+        10: str(round(decimalVal, 4)),
+        2: toBinary(decimalVal),
+        8: toOctal(decimalVal),
+        16: toHex(decimalVal)
+    }
+
+    for base in bases:
+        if base == randBase:
+            continue
+
+        userAns = input(f"Conver to Base {base}: ")
+        userRound += 1
+
+        if userAns == correct[base]:
+            print(f"Base {base} corrected!!!!!")
+            score += 10
+        else:
+            print(f"Base {base} incorrect!!!!!!!!!!!!")
+            print(f"Correct: {correct[base]}")
+            incorrectScore += 1
+
+    if incorrectScore > 0:
+        print("\nYou really bad at this huh? Try harder.")
+
+    print(f"\nYour score: {score}")
 
     again = input("\nDo you want another round? {y/n}: ").lower()
 
     if again != "y":
-        print("Good job practicing. You still sucks at it. :]")
+        print("Good job. You still sucks at it. :P")
         break
