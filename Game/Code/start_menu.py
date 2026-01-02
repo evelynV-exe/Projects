@@ -1,7 +1,7 @@
 import pygame
 import os
 
-BASE_DIR = os.path.dirname(__file__)
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 FONT_PATH = os.path.join(BASE_DIR, "fonts", "Micro5-Regular.ttf")
 
 class StartMenu:

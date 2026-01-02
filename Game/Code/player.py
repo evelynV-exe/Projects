@@ -4,13 +4,13 @@ import os
 
 pygame.font.init()
 
-BASE_DIR = os.path.dirname(__file__)
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 FONT_PATH = os.path.join(BASE_DIR, "fonts", "Micro5-Regular.ttf")
 font = pygame.font.Font(FONT_PATH, 18)
 
 #character
 class Player():
-    def __init__(self, x, y, width=15, height=15):
+    def __init__(self, x, y, width=13, height=13):
         self.rect = pygame.Rect(x, y, width, height)
 
         #movement
@@ -31,7 +31,7 @@ class Player():
         self.on_ground = False
         
 
-    def update(self, keys, tiles, screenWidth, screenHeight):
+    def update(self, keys, tiles, hazards, worldWidth, screenHeight):
         self.on_ground = False
 
         #horizontal movement
@@ -50,13 +50,17 @@ class Player():
         #prevent leaving screen horizontally
         if self.rect.left <  0:
             self.rect.left = 0
-        elif self.rect.right > screenWidth:
-            self.rect.right = screenWidth
+        elif self.rect.right > worldWidth:
+            self.rect.right = worldWidth
         
         #prevent going above the screen
         if self.rect.top < 0:
             self.rect.top = 0
             self.velocity_y = 0
+
+        for hazard in hazards:
+            if self.rect.colliderect(hazard):
+                return "dead"
 
         #Dead
         if self.rect.top > screenHeight:
@@ -81,7 +85,7 @@ class Player():
     def _horizontal_collision(self, tiles):
         for tile in tiles:
             if self.rect.colliderect(tile):
-                if self.rect.x < tile.x:
+                if self.speed > 0:
                     self.rect.right = tile.left
                 else:
                     self.rect.left = tile.right
@@ -99,8 +103,10 @@ class Player():
                     self.velocity_y = 0
 
     #player
-    def draw(self, surface):
-        pygame.draw.rect(surface, (50, 168, 82), self.rect)
+    def draw(self, surface, camera_x):
+        screen_rect = self.rect.copy()
+        screen_rect.x -= camera_x
+        pygame.draw.rect(surface, (50, 168, 82), screen_rect)
 
     #the cooldown bar
     def draw_cooldown(self, surface, screenWidth):
